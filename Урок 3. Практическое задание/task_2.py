@@ -1,22 +1,30 @@
-"""
-Задание 2.
-Ваша программа должна запрашивать пароль
-Для этого пароля вам нужно получить хеш, используя функцию sha256
-Для генерации хеша обязательно нужно использовать криптографическую соль
-Обязательно выведите созданный хеш.
+from uuid import uuid4
+import hashlib
 
-Далее программа должна запросить пароль повторно
-Вам нужно проверить, совпадает ли пароль с исходным
-Для проверки необходимо сравнить хеши паролей.
+salt = uuid4().hex
+pass_bank = {}
 
-Самый просто вариант хранения хешей - просто в оперативной памяти (в переменных).
 
-ПРИМЕР:
-Введите пароль: 123
-В базе данных хранится строка: 555a3581d37993843efd4eba1921f1dcaeeafeb855965535d77c55782349444b
-Введите пароль еще раз для проверки: 123
-Вы ввели правильный пароль
+def enter_pass():
+    new_name = input('Введите имя нового пользователя: ')
+    new_pass = input('Введите пароль пользователя: ')
+    hash_pass = hashlib.sha256(salt.encode() + new_pass.encode()).hexdigest()
+    pass_bank[new_name] = hash_pass
 
-Обязательно усложните задачу! Добавьте сохранение хеша в файле и получение его из файла.
-А если вы знаете как через Python работать с БД, привяжите к заданию БД и сохраняйте хеши там.
-"""
+
+def check_pass():
+    ch_name = input('Введите имя пользователя: ')
+    ch_pass = input('Введите пароль пользователя: ')
+    hash_check_pass = hashlib.sha256(salt.encode() + ch_pass.encode()).hexdigest()
+    if pass_bank[ch_name] == hash_check_pass:
+        print(f'User {ch_name} successfully registered')
+    else:
+        print('Try one more time!')
+        return check_pass()
+
+
+enter_pass()
+enter_pass()
+print(pass_bank)
+
+check_pass()
