@@ -1,25 +1,42 @@
-"""
-1.	Пользователь вводит данные о количестве предприятий, их наименования и прибыль
-за 4 квартала (т.е. 4 отдельных числа) для каждого предприятия.
-Программа должна определить среднюю прибыль (за год для всех предприятий)
-и вывести наименования предприятий, чья прибыль выше среднего и отдельно
-вывести наименования предприятий, чья прибыль ниже среднего.
+from collections import namedtuple
 
-Подсказка:
-Для решения задачи обязательно примените какую-нибудь коллекцию из модуля collections.
 
-Пример:
-Введите количество предприятий для расчета прибыли: 2
-Введите название предприятия: Фирма_1
-через пробел введите прибыль данного предприятия
-за каждый квартал(Всего 4 квартала): 235 345634 55 235
+def average_profit():
+    list_name = 'my_list'
+    company_profit = {}
+    all_total = 0
+    firm_list = namedtuple(list_name, 'name first_quarter second_quarter third_quarter fourth_quarter')
 
-Введите название предприятия: Фирма_2
-через пробел введите прибыль данного предприятия
-за каждый квартал(Всего 4 квартала): 345 34 543 34
+    try:
+        for i in range(int(input('Enter firm number for checking: '))):
+            company = firm_list(
+                name=input('Enter company name: '),
+                first_quarter=int(input('Enter first period profit: ')),
+                second_quarter=int(input('Enter second period profit: ')),
+                third_quarter=int(input('Enter third period profit: ')),
+                fourth_quarter=int(input('Enter fourth period profit: '))
+            )
 
-Средняя годовая прибыль всех предприятий: 173557.5
-Предприятия, с прибылью выше среднего значения: Фирма_1
+            company_profit[company.name] = (
+                                                   company.first_quarter + company.second_quarter
+                                                   + company.third_quarter + company.fourth_quarter
+                                           ) / 4
+    except ValueError:
+        print('Wrong data! Try one more time from first company')
+        return average_profit()
 
-Предприятия, с прибылью ниже среднего значения: Фирма_2
-"""
+    for value in company_profit.values():
+        all_total += value / len(company_profit)
+
+    print(company_profit)
+
+    for company_name, value in company_profit.items():
+        if value > all_total:
+            print(f'Firm {company_name} has profit above average')
+        elif value < all_total:
+            print(f'Firm {company_name} has profit below average')
+        elif value == all_total:
+            print(f'Firm {company_name} has profit like average')
+
+
+average_profit()
